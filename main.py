@@ -12,7 +12,7 @@ rexUrl = r'href="(http://www.qylbbs\d*.com/read/\d*)"'
 # 目标名称
 name = 1
 # 目标网址
-baseUrl = "http://www.qylbbs3.com/"
+baseUrl = "http://www.qylbbs2.com/"
 # headers
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
@@ -35,24 +35,33 @@ except:
 pageCount = range(beginCount, endCount)
 for page in pageCount:
     pageUrl = baseUrl + "thread/81/%s&type=16" % page
-
-    request = urllib.request.Request(pageUrl, headers=headers)
-    opener = urllib.request.build_opener(cookieProcess)
-    response = opener.open(request, timeout=10)
-
-    htmlResult = response.read().decode('utf-8')
-    urlResult = re.findall(rexUrl, htmlResult)
-    urlList = list(set(urlResult))
-
-    for url in urlList:
-        request = urllib.request.Request(url, headers=headers)
+    try:
+        request = urllib.request.Request(pageUrl, headers=headers)
         opener = urllib.request.build_opener(cookieProcess)
-        response = opener.open(request, timeout=5)
-        time.sleep(1)
+        response = opener.open(request, timeout=10)
 
-        urlResult = response.read().decode('utf-8')
-        gifList = re.findall(rex, urlResult)
+        htmlResult = response.read().decode('utf-8')
+        urlResult = re.findall(rexUrl, htmlResult)
+        urlList = list(urlResult)
+    except:
+        print(pageUrl + "访问出错")
+    for url in urlList:
+        try:
+            request = urllib.request.Request(url, headers=headers)
+            opener = urllib.request.build_opener(cookieProcess)
+            response = opener.open(request, timeout=5)
+            time.sleep(1)
+
+            urlResult = response.read().decode('utf-8')
+            gifList = re.findall(rex, urlResult)
+        except:
+            print(url + "访问出错")
+            continue
         for gifUrl in gifList:
-            urllib.request.urlretrieve(gifUrl, '.\pic\%s.gif' % name)
+            try:
+                urllib.request.urlretrieve(gifUrl, '.\pic\%s.gif' % name)
+            except:
+                print(gifUrl + "访问出错")
+                continue
             name = name + 1
 print("完成")

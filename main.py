@@ -12,7 +12,7 @@ rexUrl = r'href="(http://www.qylbbs\d*.com/read/\d*)"'
 # 目标名称
 name = 1
 # 目标网址
-baseUrl = "http://www.qylbbs2.com/"
+baseUrl = ""
 # headers
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',

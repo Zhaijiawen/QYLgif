@@ -9,11 +9,9 @@ import time, threading
 rex = r'src="(http://www.\w*.com/attachment/.*?\.gif)"'
 # 目标url正则表达式
 rexUrl = r'href="(http://www.\w*.com/read/\d{6})"'
-# 目标名称
-name = 1
-# name锁
-nameLock = threading.Lock();
+
 # 目标网址
+# http://www.qbb0.com/
 baseUrl = ""
 # headers
 headers = {
@@ -48,8 +46,14 @@ def main():
         urlResult = re.findall(rexUrl, htmlResult)
         urlList = list(set(urlResult))
 
+        threads = [];
         for url in urlList:
-            threading.Thread(target=url_thread(url)).start();
+            threads.append(threading.Thread(target=url_thread, args=(url,)));
+        for t in threads:
+            t.setDaemon(True)
+            t.start()
+        for t in threads:
+            t.join()
 
 
 def url_thread(url):
@@ -60,16 +64,18 @@ def url_thread(url):
 
     urlResult = response.read().decode('utf-8')
     gifList = re.findall(rex, urlResult)
-
+    # 目标名称
+    name = 1
     for gifUrl in gifList:
         try:
             # 获取锁
-            nameLock.acquire();
-            urllib.request.urlretrieve(gifUrl, '.\pic\%s.gif' % threading.Thread.name + "-" + name)
+            urllib.request.urlretrieve(gifUrl,
+                                       '.\pic\%s.gif' % (threading.current_thread().getName() + "-" + str(name)))
             name = name + 1
-        finally:
-            # 释放锁
-            nameLock.release()
+        except:
+            print(gifUrl)
+            continue;
+
 
 
 if __name__ == '__main__':

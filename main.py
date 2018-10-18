@@ -68,7 +68,6 @@ def url_thread(url):
     name = 1
     for gifUrl in gifList:
         try:
-            # 获取锁
             urllib.request.urlretrieve(gifUrl,
                                        '.\pic\%s.gif' % (threading.current_thread().getName() + "-" + str(name)))
             name = name + 1

@@ -3,7 +3,9 @@ import urllib
 import urllib.request
 import re
 import http.cookiejar
-import time, threading
+import time
+import threading
+import os
 
 # 目标对象正则表达式
 rex = r'src="(http://www.\w*.com/attachment/.*?\.gif)"'
@@ -25,6 +27,9 @@ cookieProcess = urllib.request.HTTPCookieProcessor(cookieJar)
 opener = urllib.request.build_opener(cookieProcess)
 opener.open(request)
 
+# 判断目录
+if(not os.path.exists(".\pic")):
+    os.mkdir(".\pic")
 
 def main():
     beginCount = input("起始页：")
@@ -68,13 +73,13 @@ def url_thread(url):
     name = 1
     for gifUrl in gifList:
         try:
+            # 获取锁
             urllib.request.urlretrieve(gifUrl,
                                        '.\pic\%s.gif' % (threading.current_thread().getName() + "-" + str(name)))
             name = name + 1
         except:
             print(gifUrl)
             continue;
-
 
 
 if __name__ == '__main__':

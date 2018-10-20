@@ -28,8 +28,9 @@ opener = urllib.request.build_opener(cookieProcess)
 opener.open(request)
 
 # 判断目录
-if(not os.path.exists(".\pic")):
+if (not os.path.exists(".\pic")):
     os.mkdir(".\pic")
+
 
 def main():
     beginCount = input("起始页：")
@@ -62,24 +63,27 @@ def main():
 
 
 def url_thread(url):
-    request = urllib.request.Request(url, headers=headers)
-    opener = urllib.request.build_opener(cookieProcess)
-    response = opener.open(request, timeout=5)
-    time.sleep(1)
+    try:
+        request = urllib.request.Request(url, headers=headers)
+        opener = urllib.request.build_opener(cookieProcess)
+        response = opener.open(request, timeout=5)
+        time.sleep(1)
 
-    urlResult = response.read().decode('utf-8')
-    gifList = re.findall(rex, urlResult)
-    # 目标名称
-    name = 1
-    for gifUrl in gifList:
-        try:
-            # 获取锁
-            urllib.request.urlretrieve(gifUrl,
-                                       '.\pic\%s.gif' % (threading.current_thread().getName() + "-" + str(name)))
-            name = name + 1
-        except:
-            print(gifUrl)
-            continue;
+        urlResult = response.read().decode('utf-8')
+        gifList = re.findall(rex, urlResult)
+        # 目标名称
+        name = 1
+        for gifUrl in gifList:
+            try:
+                # 获取锁
+                urllib.request.urlretrieve(gifUrl,
+                                           '.\pic\%s.gif' % (threading.current_thread().getName() + "-" + str(name)))
+                name = name + 1
+            except:
+                print(gifUrl + "无法访问！")
+                continue;
+    except:
+        print (threading.current_thread().getName() + "线程出错！url:" + url)
 
 
 if __name__ == '__main__':

@@ -13,19 +13,21 @@ rex = r'src="(http://www.\w*.com/attachment/.*?\.gif)"'
 rexUrl = r'href="(http://www.\w*.com/read/\d{6})"'
 
 # 目标网址
-# http://www.qbb0.com/
-baseUrl = ""
+baseUrl = input("url：")
 # headers
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
 }
 # 获取cookie
-request = urllib.request.Request(baseUrl, headers=headers)
-cookieJar = http.cookiejar.CookieJar()
-cookieProcess = urllib.request.HTTPCookieProcessor(cookieJar)
+try:
+    request = urllib.request.Request(baseUrl, headers=headers)
+    cookieJar = http.cookiejar.CookieJar()
+    cookieProcess = urllib.request.HTTPCookieProcessor(cookieJar)
 
-opener = urllib.request.build_opener(cookieProcess)
-opener.open(request)
+    opener = urllib.request.build_opener(cookieProcess)
+    opener.open(request)
+except:
+    print("获取cookie失败，检查网址")
 
 # 判断目录
 if (not os.path.exists(".\pic")):
